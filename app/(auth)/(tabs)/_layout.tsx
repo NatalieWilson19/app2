@@ -20,6 +20,8 @@ import { Text } from "@/components/ui/text";
 import { AuthStatus } from "@/types/auth_status";
 import ThemeBackground from "@/components/custom/ThemeBackground";
 import { basicThemeColors } from "@/constants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
   // const queryClient = useQueryClient();
@@ -84,85 +86,89 @@ export default function TabLayout() {
   }, [auth.currentChain?.theme]);
 
   return (
-    <Tabs
-      backBehavior="initialRoute"
-      screenOptions={{
-        tabBarInactiveBackgroundColor: themeColor,
-        tabBarActiveBackgroundColor: themeColor,
-        tabBarActiveTintColor: "#353535",
-        tabBarInactiveTintColor: "#6b6b6b",
-        tabBarBackground: () => (
-          <Box className="absolute inset-0 bg-background-100">
-            <ThemeBackground
-              theme={auth.currentChain?.theme || ""}
-              className="absolute w-full"
-              style={{ top: -14, height: 14 }}
-            >
-              <Text
-                size="xs"
-                bold
-                className="text-center text-white"
-                numberOfLines={1}
-              >
-                {auth.currentChain?.name || t("selectALoop")}
-              </Text>
-            </ThemeBackground>
-          </Box>
-        ),
-      }}
+    <SafeAreaView
+      edges={{ bottom: "off", top: "additive" }}
+      style={{ flex: 1, backgroundColor: themeColor.slice(0, 7) }}
     >
-      <Tabs.Screen
-        name="(index)"
-        options={{
-          lazy: false,
+      <StatusBar backgroundColor={themeColor.slice(0, 7)} />
+      <Tabs
+        backBehavior="initialRoute"
+        screenOptions={{
           headerShown: false,
-          title: t("rules"),
-          tabBarIcon: ({ color }) => (
-            <BookOpen size={28} color={color as any} />
+          tabBarInactiveBackgroundColor: themeColor,
+          tabBarActiveBackgroundColor: themeColor,
+          tabBarActiveTintColor: "#353535",
+          tabBarInactiveTintColor: "#6b6b6b",
+          tabBarBackground: () => (
+            <Box className="absolute inset-0 bg-background-100">
+              <ThemeBackground
+                theme={auth.currentChain?.theme || ""}
+                className="absolute w-full"
+                style={{ top: -14, height: 14 }}
+              >
+                <Text
+                  size="xs"
+                  bold
+                  className="text-center text-white"
+                  numberOfLines={1}
+                >
+                  {auth.currentChain?.name || t("selectALoop")}
+                </Text>
+              </ThemeBackground>
+            </Box>
           ),
         }}
-      />
-      <Tabs.Screen
-        name="route"
-        options={{
-          lazy: false,
-          headerShown: false,
-          title: t("route"),
-          tabBarIcon: ({ color }) => <Route size={28} color={color as any} />,
-        }}
-      />
-      <Tabs.Screen
-        name="bags"
-        options={{
-          lazy: false,
-          headerShown: false,
-          tabBarBadge: bagTabBadge || undefined,
-          title: t("bags"),
-          tabBarIcon: ({ color }) => (
-            <ShoppingBag size={28} color={color as any} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="chat"
-        options={{
-          title: t("chat"),
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MessageCircle size={28} color={color as any} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="info"
-        options={{
-          title: t("info"),
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <UserCircle2 size={28} color={color as any} />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="(index)"
+          options={{
+            lazy: false,
+            headerShown: false,
+            tabBarLabel: t("rules"),
+            tabBarIcon: ({ color }) => (
+              <BookOpen size={28} color={color as any} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="route"
+          options={{
+            lazy: false,
+            title: t("addresses"),
+            tabBarLabel: t("route"),
+            tabBarIcon: ({ color }) => <Route size={28} color={color as any} />,
+          }}
+        />
+        <Tabs.Screen
+          name="bags"
+          options={{
+            lazy: false,
+            tabBarBadge: bagTabBadge || undefined,
+            title: t("bags"),
+            tabBarIcon: ({ color }) => (
+              <ShoppingBag size={28} color={color as any} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="chat"
+          options={{
+            title: t("chat"),
+            tabBarIcon: ({ color }) => (
+              <MessageCircle size={28} color={color as any} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="info"
+          options={{
+            title: t("info"),
+            tabBarIcon: ({ color }) => (
+              <UserCircle2 size={28} color={color as any} />
+            ),
+          }}
+        />
+      </Tabs>
+    </SafeAreaView>
   );
 }
