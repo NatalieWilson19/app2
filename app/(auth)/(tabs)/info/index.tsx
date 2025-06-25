@@ -159,7 +159,7 @@ export default function Info() {
               <Box className="h-4"></Box>
             </ThemeBackground>
             <Box className="flex-col border-2 border-t-0 border-background-400 bg-background-0">
-              <Link asChild href="/(auth)/select-chain">
+              <Link asChild push href="/(auth)/select-chain">
                 <Pressable>
                   <Box className="flex-col px-3 pb-4 pt-2">
                     <Text bold size="sm">
@@ -218,7 +218,7 @@ export default function Info() {
                       </Box>
                     </Pressable>
                   </Link>
-                  <Link asChild href="/(auth)/(tabs)/info/select-theme">
+                  <Link asChild push href="/(auth)/info/select-theme">
                     <Pressable>
                       <Box className="flex-row items-center gap-3 p-3">
                         <Text className="flex-grow">{t("theme")}</Text>

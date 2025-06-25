@@ -60,7 +60,7 @@ export default function RouteUser() {
       style={{ paddingBottom: tabBarHeight }}
     >
       {routeItem ? (
-        <VStack className="bg-background-0">
+        <VStack className="mb-4 bg-background-0">
           <UserCard
             user={routeItem.user}
             isUserPaused={routeItem.isPaused}

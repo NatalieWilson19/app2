@@ -1,5 +1,5 @@
 import { Redirect, Stack } from "expo-router";
-import React, { useEffect } from "react";
+import React, { JSX, useEffect } from "react";
 // import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTranslation } from "react-i18next";
 // import { LogLevel, OneSignal } from "react-native-onesignal";
@@ -115,28 +115,114 @@ export default function TabLayout() {
     return <Redirect href="/onboarding/step1" />;
   }
 
+  const screens: Array<JSX.Element> = [];
+
+  if (auth.currentChain !== null) {
+    screens.push(
+      <Stack.Screen
+        name="(tabs)"
+        key="(tabs)"
+        options={{
+          headerShown: false,
+        }}
+      />,
+      <Stack.Screen
+        name="bags/edit/[bagId]"
+        key="bags/edit/[bagId]"
+        options={{
+          title: t("edit"),
+          headerBackTitle: t("bags"),
+        }}
+      />,
+      <Stack.Screen
+        name="bags/create"
+        key="bags/create"
+        options={{
+          title: t("createBag"),
+          headerBackTitle: t("bags"),
+        }}
+      />,
+      <Stack.Screen
+        name="bags/select"
+        key="bags/select"
+        options={{
+          title: t("changeBagHolder"),
+          headerTitleAlign: "center",
+          presentation: "modal",
+          headerBackTitle: t("bags"),
+        }}
+      />,
+      <Stack.Screen
+        name="bulky/create"
+        key="bulky/create"
+        options={{
+          title: t("createBulkyItem"),
+          headerBackTitle: t("bags"),
+        }}
+      />,
+      <Stack.Screen
+        name="bulky/edit/[bulkyId]"
+        key="bulky/edit/[bulkyId]"
+        options={{
+          title: t("createBulkyItem"),
+          headerBackTitle: t("bags"),
+        }}
+      />,
+      <Stack.Screen
+        key="chat/in-app/channel-create"
+        name="chat/in-app/channel-create"
+        options={{
+          presentation: "modal",
+          headerTitleAlign: "center",
+          headerBackVisible: false,
+        }}
+      />,
+      <Stack.Screen
+        key="chat/in-app/channel-edit"
+        name="chat/in-app/channel-edit"
+        options={{
+          headerTitleAlign: "center",
+          presentation: "modal",
+          headerBackVisible: false,
+        }}
+      />,
+      <Stack.Screen
+        key="info/select-theme"
+        name="info/select-theme"
+        options={{
+          title: t("setLoopTheme"),
+          presentation: "modal",
+          headerBackVisible: true,
+          headerBackTitle: t("info"),
+        }}
+      />,
+      <Stack.Screen
+        name="rules/change"
+        key="rules/change"
+        options={{
+          title: t("customLoopRules"),
+          headerBackTitle: t("rules"),
+        }}
+      />,
+    );
+  } else {
+    screens.push(
+      <Stack.Screen
+        key="select-chain"
+        name="select-chain"
+        options={{
+          headerTitle: t("selectALoop"),
+          headerBackButtonDisplayMode: "generic",
+          headerBackTitle: t("back"),
+          headerShown: true,
+        }}
+      />,
+    );
+  }
+
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {auth.currentChain !== null ? (
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            headerTitle: queryChain.data?.resChain?.name,
-            title: queryChain.data?.resChain?.name,
-          }}
-        />
-      ) : (
-        <Stack.Screen
-          name="select-chain"
-          options={{
-            headerTitle: t("selectALoop"),
-            headerBackButtonDisplayMode: "generic",
-            headerBackTitle: t("back"),
-            headerShown: true,
-          }}
-        />
-      )}
+    <Stack screenOptions={{ headerShown: true }}>
+      {screens}
       <Stack.Screen
         name="gdpr"
         options={{

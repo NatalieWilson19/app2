@@ -71,7 +71,7 @@ export default function BagsList(props: {
         switch (selectedIndex) {
           case 0:
             // Edit
-            router.push(`/(auth)/(tabs)/bags/edit/${bag.id}/`);
+            router.push(`/(auth)/bags/edit/${bag.id}/`);
             break;
           case 1:
             // Delete

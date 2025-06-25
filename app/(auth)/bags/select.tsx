@@ -1,25 +1,26 @@
 import { authStore, authStoreListRouteUsers } from "@/store/auth";
 import { useStore } from "@tanstack/react-store";
 import { useTranslation } from "react-i18next";
-import { Text } from "../../../../components/ui/text";
-import { RadioGroup } from "../../../../components/ui/radio";
+import { Text } from "../../../components/ui/text";
+import { RadioGroup } from "../../../components/ui/radio";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { bagPut } from "@/api/bag";
 import { UID } from "@/api/types";
 import { useForm } from "@tanstack/react-form";
 import { catchErrThrow401 } from "@/utils/handleRequests";
-import DatePickerSingleItem from "../../../../components/custom/DatePicker";
+import DatePickerSingleItem from "../../../components/custom/DatePicker";
 import { FlatList, Pressable, View } from "react-native";
 import useFilteredRouteUsers from "@/hooks/useFilteredRouteUsers";
-import BagsSelectRadioItem from "../../../../components/custom/bags/BagsSelectRadioItem";
+import BagsSelectRadioItem from "../../../components/custom/bags/BagsSelectRadioItem";
 import { Box } from "@/components/ui/box";
 import { Link, router, useNavigation } from "expo-router";
 import { selectedBagStore } from "@/store/selected-bag";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import { LucideCircleX, LucideSearch } from "lucide-react-native";
+import { LucideCircleX, LucideMinus, LucideSearch } from "lucide-react-native";
 import { useDebounce } from "@uidotdev/usehooks";
+import { Header } from "@expo/html-elements";
 
 export default function BagsSheet() {
   const listRouteUsers = useStore(authStoreListRouteUsers);
@@ -135,6 +136,8 @@ export default function BagsSheet() {
               <FlatList
                 className="shrink"
                 data={sortedListRouteUsers}
+                initialNumToRender={20}
+                maxToRenderPerBatch={20}
                 keyExtractor={(item) => String(item.routeUser.routeIndex)}
                 renderItem={({ item }) => (
                   <BagsSelectRadioItem

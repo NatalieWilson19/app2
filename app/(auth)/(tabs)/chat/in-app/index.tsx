@@ -136,7 +136,7 @@ export default function ChatClothingloop() {
       ...s,
       editChannel: { channel, fallbackChainUID: currentChain!.uid },
     }));
-    router.push("/(auth)/(tabs)/chat/in-app/channel-edit");
+    router.push("/(auth)/chat/in-app/channel-edit");
   }
 
   function handleLongPressChannel(channel: ChatChannel) {
@@ -255,7 +255,7 @@ export default function ChatClothingloop() {
       ...s,
       editChannel: { fallbackChainUID: currentChain!.uid, channel: null },
     }));
-    router.push("/(auth)/(tabs)/chat/in-app/channel-create");
+    router.push("/(auth)/chat/in-app/channel-create");
   }
   if (chat.chatInAppDisabled === true) {
     return <Redirect href="/(auth)/(tabs)/chat/types" withAnchor />;

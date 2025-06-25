@@ -23,7 +23,6 @@ import { Input, InputField } from "@/components/ui/input";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { VStack } from "@/components/ui/vstack";
 import { authStore } from "@/store/auth";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStore } from "@tanstack/react-store";
 import { router, useNavigation } from "expo-router";
 import {
@@ -54,7 +53,7 @@ export default function Change() {
         </Pressable>
       ),
     });
-  }, [rules]);
+  }, [rules, t]);
 
   useEffect(() => {
     if (rulesCustom) {
@@ -118,7 +117,6 @@ export default function Change() {
     setRules((s) => [...s, { title: "", content: "" }]);
   }
 
-  const tabBarHeight = useBottomTabBarHeight();
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic" className="mb-4">
       {rulesCustom ? (

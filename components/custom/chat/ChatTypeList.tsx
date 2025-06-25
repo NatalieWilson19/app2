@@ -82,7 +82,7 @@ export default function ChatTypeList(props: { onPressEnterInApp: () => void }) {
                 color={messageInApp.bgColor}
               />
               <Text className="text-center text-lg">{messageInApp.title}</Text>
-              <Link href={chatUrl as ExternalPathString} asChild>
+              <Link replace href="/(auth)/(tabs)/chat/in-app" asChild>
                 <Button
                   style={{ backgroundColor: messageInApp.bgColor }}
                   className="rounded-pill"

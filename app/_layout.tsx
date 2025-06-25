@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { Colors } from "@/constants/Colors";
 import "@/global.css";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function onAppStateChange(status: AppStateStatus) {
@@ -70,51 +70,56 @@ export default function RootLayout() {
         <GluestackUIProvider mode="light">
           <QueryClientProvider client={queryClient}>
             <GestureHandlerRootView>
-              <AuthProvider>
-                <SafeAreaProvider>
-                  <Stack
-                    screenOptions={{
-                      headerShown: false,
-                    }}
-                  >
-                    <Stack.Screen
-                      name="(auth)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="onboarding"
-                      options={{
+              <SafeAreaView
+                edges={{ bottom: "off", top: "additive" }}
+                style={{ flex: 1, backgroundColor: "#ffffff" }}
+              >
+                <AuthProvider>
+                  <SafeAreaProvider>
+                    <Stack
+                      screenOptions={{
                         headerShown: false,
                       }}
-                    />
-                    <Stack.Screen
-                      name="loading"
-                      options={{
-                        title: t("loading"),
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="open-source"
-                      options={{
-                        title: t("openSource"),
-                        headerShown: true,
-                        headerBackTitle: t("back"),
-                      }}
-                    />
-                    <Stack.Screen
-                      name="privacy-policy"
-                      options={{
-                        title: t("privacyPolicy"),
-                        headerShown: true,
-                        headerLargeTitle: true,
-                        headerBackTitle: t("back"),
-                      }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                </SafeAreaProvider>
-              </AuthProvider>
+                    >
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="onboarding"
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="loading"
+                        options={{
+                          title: t("loading"),
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="open-source"
+                        options={{
+                          title: t("openSource"),
+                          headerShown: true,
+                          headerBackTitle: t("back"),
+                        }}
+                      />
+                      <Stack.Screen
+                        name="privacy-policy"
+                        options={{
+                          title: t("privacyPolicy"),
+                          headerShown: true,
+                          headerLargeTitle: true,
+                          headerBackTitle: t("back"),
+                        }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                  </SafeAreaProvider>
+                </AuthProvider>
+              </SafeAreaView>
             </GestureHandlerRootView>
           </QueryClientProvider>
           <StatusBar style="auto" />

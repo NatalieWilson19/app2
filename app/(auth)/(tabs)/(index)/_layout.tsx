@@ -16,18 +16,11 @@ export default function RulesStackLayout() {
           title: t("howDoesItWork"),
           headerRight: isHost
             ? () => (
-                <Link asChild href="./change">
+                <Link asChild push href="/(auth)/rules/change">
                   <Text>{t("edit")}</Text>
                 </Link>
               )
             : undefined,
-        }}
-      />
-      <Stack.Screen
-        name="change"
-        options={{
-          headerLargeTitle: false,
-          title: t("customLoopRules"),
         }}
       />
     </Stack>

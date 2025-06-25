@@ -3,6 +3,8 @@ import { authStore } from "@/store/auth";
 import { useStore } from "@tanstack/react-store";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback } from "react";
+import { StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BagEdit() {
   const { bagId: bagIdStr }: { bagId: string } = useLocalSearchParams();
@@ -11,6 +13,13 @@ export default function BagEdit() {
   return useCallback(() => {
     const bagId = parseInt(bagIdStr);
     const bag = bags?.find((b) => b.id == bagId);
-    return bag ? <BagPatch bag={bag} /> : null;
+    return bag ? (
+      <SafeAreaView
+        edges={{ bottom: "off", top: "additive" }}
+        style={{ flex: 1, backgroundColor: "#ffffff" }}
+      >
+        <BagPatch bag={bag} />
+      </SafeAreaView>
+    ) : null;
   }, [bags, bagIdStr])();
 }

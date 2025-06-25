@@ -57,7 +57,7 @@ export default function BulkyList(props: { bulkyList: BulkyItem[] }) {
           // cancel action
         } else if (buttonIndex === 1) {
           // edit
-          router.push(`/(auth)/(tabs)/bags/bulky/edit/${bulky.id}/`);
+          router.push(`/(auth)/bulky/edit/${bulky.id}/`);
         } else if (buttonIndex === 2) {
           // delete
           Alert.alert(
