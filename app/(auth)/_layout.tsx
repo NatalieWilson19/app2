@@ -124,6 +124,7 @@ export default function TabLayout() {
         key="(tabs)"
         options={{
           headerShown: false,
+          title: "",
         }}
       />,
       <Stack.Screen
@@ -227,6 +228,14 @@ export default function TabLayout() {
         name="gdpr"
         options={{
           headerTitle: t("gdpr"),
+          headerBackVisible: false,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="offline-no-data"
+        options={{
+          headerTitle: t("offline"),
           headerBackVisible: false,
           headerShown: true,
         }}

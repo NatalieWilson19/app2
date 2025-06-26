@@ -59,8 +59,10 @@ export default function AuthProvider(props: PropsWithChildren) {
 
   useEffect(() => {
     if (queryUser.fetchStatus === "paused") {
-      console.log("fetch status paused", authStore.state.authStatus);
-      router.push("/(auth)/offline-no-data");
+      setTimeout(() => {
+        console.log("fetch status paused", authStore.state.authStatus);
+        router.push("/(auth)/offline-no-data");
+      }, 3000);
     }
   }, [queryUser.fetchStatus]);
   useEffect(() => {
