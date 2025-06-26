@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useStore } from "@tanstack/react-store";
 import { useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { SafeAreaView, ScrollView } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 import {
   Radio,
   RadioGroup,
@@ -38,9 +38,12 @@ export default function SelectChain() {
         return [];
       }
 
-      const promises = auth.authUser.chains
-        .filter((c) => c.is_approved)
-        .map((c) => chainGet(c.chain_uid).then((res) => res.data));
+      const promises = auth.authUser.chains.map((uc) =>
+        chainGet(uc.chain_uid).then((res) => ({
+          is_approved: uc.is_approved,
+          ...res.data,
+        })),
+      );
       return await Promise.all(promises);
     },
   });
@@ -87,7 +90,9 @@ export default function SelectChain() {
             >
               {listOfChains?.map((c) => {
                 const isDisabled =
-                  (c.is_app_disabled || c.published == false) &&
+                  (c.is_app_disabled ||
+                    c.published == false ||
+                    c.is_approved == false) &&
                   c.name != "Test Loop";
                 return (
                   <Radio
@@ -97,7 +102,12 @@ export default function SelectChain() {
                     size="md"
                     className="items-center justify-between px-4 py-2"
                   >
-                    <RadioLabel className="text-lg">{c.name}</RadioLabel>
+                    <View className="flex flex-col">
+                      <RadioLabel className="text-lg">{c.name}</RadioLabel>
+                      {isDisabled ? (
+                        <RadioLabel>{t("disabled")}</RadioLabel>
+                      ) : null}
+                    </View>
                     <RadioIndicator>
                       <RadioIcon as={CircleIcon} />
                     </RadioIndicator>
