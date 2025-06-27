@@ -1,6 +1,7 @@
 import * as Localization from "expo-localization";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { I18nManager } from "react-native";
 
 const resources = {
   en: {
@@ -20,11 +21,22 @@ const resources = {
     faq: require("../assets/locales/fr/faq.json"),
   },
 };
+const rtlLanguages = ["ar", "he"];
 
 export const supportedLngs = ["en", "nl", "de", "fr"];
 
 export default function InitI18n() {
   let locale = Localization.getLocales()[0]?.languageCode || "en";
+  const isRTL = rtlLanguages.includes(locale);
+
+  if (isRTL) {
+    I18nManager.allowRTL(true);
+    I18nManager.forceRTL(true);
+  }
+  // Testing purposes
+  I18nManager.allowRTL(true);
+  I18nManager.forceRTL(true);
+
   i18n.use(initReactI18next).init({
     resources,
     lng: locale,
