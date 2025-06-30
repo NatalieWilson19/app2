@@ -31,6 +31,7 @@ import { Badge, BadgeIcon, BadgeText } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userUpdate } from "@/api/user";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import * as Application from "expo-application";
 import ReadOnlySwitch from "@/components/custom/ReadOnlySwitch";
 import ThemeBackground from "@/components/custom/ThemeBackground";
 import { AuthStoreContext } from "@/store/auth";
@@ -233,6 +234,9 @@ export default function Info() {
             </Box>
           </Box>
           <LogoutLink />
+          <Box className="mb-6">
+            <Text className="text-center text-typography-700">{`v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}</Text>
+          </Box>
         </Box>
         <LegalLinks />
       </Box>
