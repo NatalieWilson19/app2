@@ -1,20 +1,19 @@
 import { Redirect, Stack } from "expo-router";
-import React, { JSX, useEffect } from "react";
+import React, { JSX, useContext, useEffect } from "react";
 // import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTranslation } from "react-i18next";
 // import { LogLevel, OneSignal } from "react-native-onesignal";
-import { useStore } from "@tanstack/react-store";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { chainGet } from "@/api/chain";
-import { savedStore } from "@/store/saved";
+import { SavedStoreContext } from "@/store/saved";
 import { userGetAllByChain } from "@/api/user";
 import { catchErrThrow401 } from "@/utils/handleRequests";
 import { bagGetAllByChain } from "@/api/bag";
 import { routeGetOrder } from "@/api/route";
 import { Platform } from "react-native";
 import { OneSignal } from "react-native-onesignal";
-import { oneSignalStore } from "@/store/onesignal";
+import { OneSignalStoreContext } from "@/store/onesignal";
 import { bulkyItemGetAllByChain } from "@/api/bulky";
 import { AuthStatus } from "@/types/auth_status";
 
@@ -24,8 +23,18 @@ const oneSignalKey = process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID;
 export default function TabLayout() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  const auth = useStore(authStore);
-  const saved = useStore(savedStore);
+  const {
+    authUser,
+    authStatus,
+    currentChain,
+    setCurrentChain,
+    setCurrentChainUsers,
+    setCurrentChainRoute,
+    setCurrentBags,
+    setCurrentBulky,
+  } = useContext(AuthStoreContext);
+  const oneSignalStore = useContext(OneSignalStoreContext);
+  const { saved } = useContext(SavedStoreContext);
   const selectedChainUID = saved.chainUID;
 
   const queryChain = useQuery({
@@ -56,40 +65,36 @@ export default function TabLayout() {
         typeof resChainRoute === "string"
       )
         throw "Server is responding incorrectly";
-      authStore.setState((s) => ({
-        ...s,
-        currentChain: resChain,
-        currentChainUsers: resChainUsers,
-        currentChainRoute: resChainRoute,
-      }));
+
+      setCurrentChain(resChain);
+      setCurrentChainUsers(resChainUsers);
+      setCurrentChainRoute(resChainRoute);
 
       return { resChain, resChainUsers };
     },
-    enabled: Boolean(selectedChainUID && auth.authUser),
+    enabled: Boolean(selectedChainUID && authUser),
   });
   useQuery({
     queryKey: ["auth", "chain-bags", selectedChainUID],
     async queryFn() {
       // test with one request before asking for the rest
       const [resBags, resBulky] = await Promise.all([
-        bagGetAllByChain(selectedChainUID, auth.authUser!.uid)
+        bagGetAllByChain(selectedChainUID, authUser!.uid)
           .then((res) => res.data)
           .catch(catchErrThrow401),
-        bulkyItemGetAllByChain(selectedChainUID, auth.authUser!.uid)
+        bulkyItemGetAllByChain(selectedChainUID, authUser!.uid)
           .then((res) => res.data)
           .catch(catchErrThrow401),
       ]);
       if (typeof resBags === "string" || typeof resBulky === "string")
         throw "Server responds incorrectly";
-      authStore.setState((s) => ({
-        ...s,
-        currentBags: resBags,
-        currentBulky: resBulky,
-      }));
+
+      setCurrentBags(resBags);
+      setCurrentBulky(resBulky);
 
       return null;
     },
-    enabled: Boolean(selectedChainUID && auth.authUser),
+    enabled: Boolean(selectedChainUID && authUser),
   });
   useEffect(() => {
     if (queryChain.error) queryClient.clear();
@@ -97,27 +102,28 @@ export default function TabLayout() {
 
   // one signal
   useEffect(() => {
-    if (!auth.authUser) return;
+    console.log("(auth)/authUser updated", authUser?.uid);
+    if (!authUser) return;
     if (!(oneSignalKey && isPlatformMobile)) return;
-    if (!oneSignalStore.state.isInitialized) {
+    if (!oneSignalStore.isInitialized) {
       OneSignal.initialize(oneSignalKey);
       OneSignal.Notifications.requestPermission(true);
-      oneSignalStore.setState((s) => ({ ...s, isInitialized: true }));
+      oneSignalStore.setIsInitialized(true);
     }
-    if (!oneSignalStore.state.isLoggedIn) {
-      OneSignal.login(auth.authUser!.uid);
-      oneSignalStore.setState((s) => ({ ...s, isLoggedIn: true }));
+    if (!oneSignalStore.isLoggedIn) {
+      OneSignal.login(authUser!.uid);
+      oneSignalStore.setIsLoggedIn(true);
     }
-  }, [auth.authUser]);
+  }, [authUser]);
 
-  if (auth.authStatus === AuthStatus.LoggedOut) {
+  if (authStatus === AuthStatus.LoggedOut) {
     console.info("back to onboarding");
     return <Redirect href="/onboarding/step1" />;
   }
 
   const screens: Array<JSX.Element> = [];
 
-  if (auth.currentChain !== null) {
+  if (currentChain !== null) {
     screens.push(
       <Stack.Screen
         name="(tabs)"

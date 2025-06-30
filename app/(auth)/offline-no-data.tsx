@@ -2,13 +2,12 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { AuthStatus } from "@/types/auth_status";
 import { useQueryClient } from "@tanstack/react-query";
-import { useStore } from "@tanstack/react-store";
 import { router } from "expo-router";
 import { LucideServerOff } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView, ActivityIndicator } from "react-native";
 
@@ -16,10 +15,7 @@ export default function OfflineNoData() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
-  const [authStatus, currentChain] = useStore(authStore, (s) => [
-    s.authStatus,
-    s.currentChain,
-  ]);
+  const { authStatus, currentChain } = useContext(AuthStoreContext);
 
   function onPressRefresh() {
     setIsLoading(true);

@@ -2,18 +2,17 @@ import FormLabel from "@/components/custom/FormLabel";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import { Pressable, ScrollView } from "react-native";
-import { useForm, useStore } from "@tanstack/react-form";
-import { authStore } from "@/store/auth";
+import { useForm } from "@tanstack/react-form";
+import { AuthStoreContext } from "@/store/auth";
 import { Input, InputField } from "@/components/ui/input";
 import { HStack } from "@/components/ui/hstack";
 import { Button, ButtonText } from "@/components/ui/button";
 import { bagPut } from "@/api/bag";
-import { savedStore } from "@/store/saved";
 import { useQueryClient } from "@tanstack/react-query";
 import { Bag } from "@/api/typex2";
 import ColorSelect from "../ColorSelect";
@@ -42,8 +41,8 @@ const emojis = ["👻", "🐰", "👟", "📖", "⬆️"];
 
 export default function BagPatch(props: { bag: Bag | null }) {
   const { t } = useTranslation();
-  const authUser = useStore(authStore, (s) => s.authUser);
-  const chainUid = useStore(savedStore, (s) => s.chainUID);
+  const { authUser, currentChain } = useContext(AuthStoreContext);
+  const chainUid = currentChain!.uid;
   const queryClient = useQueryClient();
   //   const listBags = useStore(authStoreListBags);
   const navigation = useNavigation();

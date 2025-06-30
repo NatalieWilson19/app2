@@ -1,9 +1,8 @@
-import { authStore, authStoreListRouteUsers } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { useTranslation } from "react-i18next";
 import { Text } from "../../../components/ui/text";
 import { RadioGroup } from "../../../components/ui/radio";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { bagPut } from "@/api/bag";
 import { UID } from "@/api/types";
@@ -15,20 +14,21 @@ import useFilteredRouteUsers from "@/hooks/useFilteredRouteUsers";
 import BagsSelectRadioItem from "../../../components/custom/bags/BagsSelectRadioItem";
 import { Box } from "@/components/ui/box";
 import { Link, router, useNavigation } from "expo-router";
-import { selectedBagStore } from "@/store/selected-bag";
+import { SelectedBagStoreContext } from "@/store/selected-bag";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import { LucideCircleX, LucideMinus, LucideSearch } from "lucide-react-native";
+import { LucideCircleX, LucideSearch } from "lucide-react-native";
 import { useDebounce } from "@uidotdev/usehooks";
-import { Header } from "@expo/html-elements";
 
 export default function BagsSheet() {
-  const listRouteUsers = useStore(authStoreListRouteUsers);
-  const { selectedBag } = useStore(selectedBagStore);
-
+  const { selectedBagStore: selectedBag } = useContext(SelectedBagStoreContext);
+  const {
+    authUser,
+    currentChain,
+    authStoreListRouteUsers: listRouteUsers,
+  } = useContext(AuthStoreContext);
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { currentChain, authUser } = useStore(authStore);
   const navigation = useNavigation();
   const [search, setSearch] = useState("");
 

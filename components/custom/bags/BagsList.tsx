@@ -5,12 +5,12 @@ import { Card } from "@/components/ui/card";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-import { authStore, ListBag } from "@/store/auth";
+import { AuthStoreContext, ListBag } from "@/store/auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { ShoppingBag, EllipsisIcon } from "lucide-react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Pressable } from "react-native";
 import BagsListItemUser from "./BagListItemUser";
@@ -24,9 +24,9 @@ export default function BagsList(props: {
   const { t } = useTranslation();
   const { showActionSheetWithOptions } = useActionSheet();
   const queryClient = useQueryClient();
+  const { authUser, currentChain } = useContext(AuthStoreContext);
   const mutateBagDelete = useMutation({
     async mutationFn(bagId: number) {
-      const { authUser, currentChain } = authStore.state;
       return bagRemove(currentChain!.uid, authUser!.uid, bagId).finally(() => {
         queryClient.invalidateQueries({
           queryKey: ["auth", "chain-bags", currentChain!.uid],

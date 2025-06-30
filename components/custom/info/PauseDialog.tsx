@@ -8,12 +8,12 @@ import {
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateTimePicker, { useDefaultStyles } from "react-native-ui-datepicker";
 import { useForm } from "@tanstack/react-form";
 import { UID } from "@/api/types";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { IsPausedHowResult } from "@/utils/user";
 import { Alert } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
@@ -32,6 +32,7 @@ export default function usePauseDialog(props: {
   PauseDateDialog: FC;
 } {
   const [openPauseDuration, setOpenPauseDuration] = useState(false);
+  const { currentChain } = useContext(AuthStoreContext);
   const { showActionSheetWithOptions } = useActionSheet();
   const form = useForm({
     defaultValues: {
@@ -44,7 +45,7 @@ export default function usePauseDialog(props: {
       | "off_loop"
       | "off_user",
     onSubmit({ value, meta }) {
-      const chainUid = authStore.state.currentChain?.uid;
+      const chainUid = currentChain?.uid;
       let prom: Promise<void>;
       switch (meta) {
         case "on_user":

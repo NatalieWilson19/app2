@@ -1,9 +1,8 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import ChatTypeEdit from "./ChatTypeEdit";
 import { useTranslation } from "react-i18next";
-import { useStore } from "@tanstack/react-store";
-import { authStoreAuthUserRoles } from "@/store/auth";
-import { chatStore } from "@/store/chat";
+import { AuthStoreContext } from "@/store/auth";
+import { ChatStoreContext } from "@/store/chat";
 import { messageInApp, messagingApps } from "@/constants/MessagingApps";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
@@ -16,8 +15,9 @@ import { Card } from "@/components/ui/card";
 
 export default function ChatTypeList(props: { onPressEnterInApp: () => void }) {
   const { t } = useTranslation();
-  const authUserRoles = useStore(authStoreAuthUserRoles);
-  const { appType, chatUrl, chatInAppDisabled } = useStore(chatStore);
+  const { authStoreAuthUserRoles: authUserRoles } =
+    useContext(AuthStoreContext);
+  const { appType, chatUrl, chatInAppDisabled } = useContext(ChatStoreContext);
 
   const currentChatApp = useMemo(() => {
     switch (appType) {

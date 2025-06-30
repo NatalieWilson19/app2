@@ -1,10 +1,9 @@
 import { chainGet } from "@/api/chain";
-import { authStore } from "@/store/auth";
-import { savedStore } from "@/store/saved";
+import { AuthStoreContext } from "@/store/auth";
+import { SavedStoreContext } from "@/store/saved";
 import { useForm } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
-import { useStore } from "@tanstack/react-store";
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView, ScrollView, View } from "react-native";
 import {
@@ -23,22 +22,23 @@ import LegalLinks from "@/components/custom/LegalLinks";
 
 export default function SelectChain() {
   const { t } = useTranslation();
-  const auth = useStore(authStore);
+  const { authUser, currentChain } = useContext(AuthStoreContext);
+  const { setSaved } = useContext(SavedStoreContext);
   const navigation = useNavigation();
 
   const { data: listOfChains } = useQuery({
     queryKey: [
       "auth",
       "user-chains",
-      auth.authUser?.uid,
-      auth.authUser?.chains?.join(","),
+      authUser?.uid,
+      authUser?.chains?.join(","),
     ],
     async queryFn() {
-      if (!auth.authUser?.chains.length) {
+      if (!authUser?.chains.length) {
         return [];
       }
 
-      const promises = auth.authUser.chains.map((uc) =>
+      const promises = authUser.chains.map((uc) =>
         chainGet(uc.chain_uid).then((res) => ({
           is_approved: uc.is_approved,
           ...res.data,
@@ -53,23 +53,23 @@ export default function SelectChain() {
     },
     async onSubmit({ value }) {
       if (!value.chainUid) throw "Please select a Loop";
-      savedStore.setState((s) => ({ ...s, chainUID: value.chainUid }));
+      setSaved((s) => ({ ...s, chainUID: value.chainUid }));
       router.replace("/(auth)/(tabs)/(index)");
     },
   });
   useLayoutEffect(() => {
-    if (auth.currentChain) {
-      form.setFieldValue("chainUid", auth.currentChain.uid);
+    if (currentChain) {
+      form.setFieldValue("chainUid", currentChain.uid);
       navigation.setOptions({
-        headerBackTitle: auth.currentChain.name.slice(0, 8) + "...",
+        headerBackTitle: currentChain.name.slice(0, 8) + "...",
         title: t("selectALoop"),
       } satisfies NativeStackNavigationOptions);
     }
-  }, [auth.currentChain?.uid, navigation, t]);
+  }, [currentChain?.uid, navigation, t]);
 
   return (
     <SafeAreaView className="flex-1 bg-background-0">
-      {auth.currentChain ? null : (
+      {currentChain ? null : (
         <>
           <LogoutLink />
           <LegalLinks />

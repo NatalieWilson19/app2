@@ -5,9 +5,8 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import dayjs from "@/utils/dayjs";
 import { Pressable, VirtualizedList } from "react-native";
-import { authStore } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
-import { useState } from "react";
+import { AuthStoreContext } from "@/store/auth";
+import { useContext, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { PinIcon } from "lucide-react-native";
 import { HStack } from "@/components/ui/hstack";
@@ -23,6 +22,7 @@ export default function ChatMessages(props: {
   onEndReached: () => void;
 }) {
   const { t } = useTranslation();
+  const { currentChainUsers } = useContext(AuthStoreContext);
   const [refreashing, setRefreshing] = useState(false);
   const handleRefresh = () => {
     setRefreshing(true);
@@ -30,7 +30,6 @@ export default function ChatMessages(props: {
       setRefreshing(false);
     });
   };
-  const { currentChainUsers } = useStore(authStore);
   const debounceOnEndReached = useDebounceCallback(() => {
     props.onEndReached();
   }, 300);

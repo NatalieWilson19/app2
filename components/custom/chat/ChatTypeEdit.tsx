@@ -1,10 +1,10 @@
 import { chatTypePatch } from "@/api/chat";
 import { ChatPatchTypeRequest } from "@/api/typex2";
-import { AppType, chatStore } from "@/store/chat";
+import { AppType, ChatStoreContext } from "@/store/chat";
 import * as Clipboard from "expo-clipboard";
-import { useForm, useStore } from "@tanstack/react-form";
+import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { VStack } from "@/components/ui/vstack";
 import FormLabel from "../FormLabel";
 import { Button, ButtonText } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Input, InputField } from "@/components/ui/input";
 import { Icon } from "@/components/ui/icon";
 import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import {
   Radio,
   RadioGroup,
@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/radio";
 
 export default function ChatTypeEdit() {
-  const currentChain = useStore(authStore, (s) => s.currentChain);
-  const { appType, chatUrl, chatInAppDisabled } = useStore(chatStore);
+  const { appType, chatUrl, chatInAppDisabled } = useContext(ChatStoreContext);
+  const { currentChain } = useContext(AuthStoreContext);
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const appTypes = useMemo(

@@ -1,7 +1,6 @@
 import { chainUpdate } from "@/api/chain";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { useForm } from "@tanstack/react-form";
-import { useStore } from "@tanstack/react-store";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView, ScrollView } from "react-native";
 import {
@@ -15,7 +14,7 @@ import { CircleIcon } from "lucide-react-native";
 import { router } from "expo-router";
 import { Button, ButtonText } from "@/components/ui/button";
 import { basicThemeColors, flagFlags } from "@/constants/Colors";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Box } from "@/components/ui/box";
 
 const themeOptions = [
@@ -26,7 +25,7 @@ const themeOptions = [
 
 export default function SelectTheme() {
   const { t } = useTranslation();
-  const currentChain = useStore(authStore, (s) => s.currentChain);
+  const { currentChain, setCurrentChain } = useContext(AuthStoreContext);
 
   const form = useForm({
     defaultValues: {
@@ -38,10 +37,7 @@ export default function SelectTheme() {
         uid: currentChain!.uid,
         theme: value.theme,
       });
-      authStore.setState((s) => ({
-        ...s,
-        currentChain: { ...s.currentChain!, theme: value.theme },
-      }));
+      setCurrentChain((s) => ({ ...s!, theme: value.theme }));
       router.back();
     },
   });

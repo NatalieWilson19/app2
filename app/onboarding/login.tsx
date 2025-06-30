@@ -7,7 +7,6 @@ import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
-import { savedStore } from "@/store/saved";
 import { useForm } from "@tanstack/react-form";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -24,12 +23,13 @@ import {
 import { Input, InputField } from "@/components/ui/input";
 import { Box } from "@/components/ui/box";
 import LegalLinks from "@/components/custom/LegalLinks";
-import { createRef, useState } from "react";
+import { createRef, useContext, useState } from "react";
 import Sleep from "@/utils/sleep";
+import { SavedStoreContext } from "@/store/saved";
 
 export default function Step2() {
   const theme = useColorScheme() ?? "light";
-
+  const { setSaved } = useContext(SavedStoreContext);
   const refInputFieldPasscode = createRef<any>();
   const [emailSent, setEmailSent] = useState(false);
   const [tokenSent, setTokenSent] = useState(false);
@@ -51,11 +51,11 @@ export default function Step2() {
       return loginValidate(emailBase64, passcode).then((res) => res.data);
     },
     onSuccess(data) {
-      savedStore.setState((s) => ({
+      setSaved({
         userUID: data.user.uid,
         token: data.token,
         chainUID: "",
-      }));
+      });
 
       axios.defaults.auth = "Bearer " + data.token;
       queryClient.invalidateQueries({

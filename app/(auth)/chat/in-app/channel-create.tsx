@@ -1,10 +1,10 @@
 import ChatChannelCreateEdit from "@/components/custom/chat/ChatChannelsCreateEdit";
 import { Box } from "@/components/ui/box";
-import { chatStore } from "@/store/chat";
-import { useStore } from "@tanstack/react-store";
+import { ChatStoreContext } from "@/store/chat";
+import { useContext } from "react";
 
 export default function ChatEdit() {
-  const { editChannel } = useStore(chatStore);
+  const { editChannel } = useContext(ChatStoreContext);
 
   if (!editChannel) return <Box />;
   return (

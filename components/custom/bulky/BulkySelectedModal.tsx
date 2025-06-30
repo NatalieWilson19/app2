@@ -6,11 +6,10 @@ import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { messagingApps } from "@/constants/MessagingApps";
-import { authStore } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { t } from "i18next";
 import { XCircleIcon } from "lucide-react-native";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import {
   SafeAreaView,
   Modal,
@@ -26,7 +25,7 @@ export default function BulkySelectedModal(props: {
   selected: BulkyItem;
   setSelected: (s: BulkyItem | null) => void;
 }) {
-  const currentChainUsers = useStore(authStore, (s) => s.currentChainUsers);
+  const { currentChainUsers } = useContext(AuthStoreContext);
   const user = useMemo(() => {
     return currentChainUsers?.find((u) => u.uid === props.selected.user_uid);
   }, [props.selected, currentChainUsers]);

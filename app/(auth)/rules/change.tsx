@@ -1,5 +1,4 @@
 import { chainUpdate } from "@/api/chain";
-import { Chain } from "@/api/types";
 import FormLabel from "@/components/custom/FormLabel";
 import {
   FaqListItem,
@@ -22,8 +21,7 @@ import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { VStack } from "@/components/ui/vstack";
-import { authStore } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { router, useNavigation } from "expo-router";
 import {
   ChevronDownIcon,
@@ -32,12 +30,12 @@ import {
   RefreshCcwIcon,
   Trash2Icon,
 } from "lucide-react-native";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Pressable, ScrollView, Text } from "react-native";
 
 export default function Change() {
-  const currentChain = useStore(authStore, (s) => s.currentChain);
+  const { currentChain, setCurrentChain } = useContext(AuthStoreContext);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const rulesDefault = useFaqDefault();
@@ -85,12 +83,9 @@ export default function Change() {
       uid: currentChain!.uid,
       rules_override,
     });
-    authStore.setState((s) => ({
-      ...s,
-      currentChain: {
-        ...(s.currentChain as Chain),
-        rules_override,
-      },
+    setCurrentChain((s) => ({
+      ...s!,
+      rules_override,
     }));
     router.back();
   }

@@ -1,14 +1,12 @@
 import BagPatch from "@/components/custom/bags/BagPatch";
-import { authStore } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { useLocalSearchParams } from "expo-router";
-import { useCallback } from "react";
-import { StatusBar } from "react-native";
+import { useCallback, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BagEdit() {
   const { bagId: bagIdStr }: { bagId: string } = useLocalSearchParams();
-  const bags = useStore(authStore, (s) => s.currentBags);
+  const { currentBags: bags } = useContext(AuthStoreContext);
 
   return useCallback(() => {
     const bagId = parseInt(bagIdStr);

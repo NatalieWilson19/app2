@@ -1,12 +1,12 @@
 import { router, Tabs } from "expo-router";
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useStore } from "@tanstack/react-store";
-import { authStore, authStoreListBags } from "@/store/auth";
+import { useStore } from "@nanostores/react";
+import { AuthStoreContext } from "@/store/auth";
 import { useQuery } from "@tanstack/react-query";
 import { chainGet } from "@/api/chain";
-import { savedStore } from "@/store/saved";
+import { SavedStoreContext } from "@/store/saved";
 import {
   BookOpen,
   MessageCircle,
@@ -20,48 +20,50 @@ import { Text } from "@/components/ui/text";
 import { AuthStatus } from "@/types/auth_status";
 import ThemeBackground from "@/components/custom/ThemeBackground";
 import { basicThemeColors } from "@/constants/Colors";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
   // const queryClient = useQueryClient();
   const { t } = useTranslation();
-  const auth = useStore(authStore);
-  const listBags = useStore(authStoreListBags);
-  const selectedChainUID = useStore(savedStore, (s) => s.chainUID);
+  const {
+    authStatus,
+    authStoreListBags: listBags,
+    authUser,
+    currentChain,
+  } = useContext(AuthStoreContext);
+  const { saved } = useContext(SavedStoreContext);
+  const { chainUID: selectedChainUID } = saved;
   // const colorScheme = useColorScheme() ?? "light";
 
   useEffect(() => {
-    if (auth.authUser) {
+    if (authUser) {
       const shouldRedirectGdpr =
-        auth.authUser.accepted_dpa === false ||
-        auth.authUser.accepted_toh === false;
+        authUser.accepted_dpa === false || authUser.accepted_toh === false;
       if (shouldRedirectGdpr) {
-        const isAnyHost = auth.authUser.chains.some((uc) => uc.is_chain_admin);
+        const isAnyHost = authUser.chains.some((uc) => uc.is_chain_admin);
 
         if (isAnyHost && shouldRedirectGdpr) router.replace("/(auth)/gdpr");
       }
     }
 
     // if no chain selected
-    if (!selectedChainUID && auth.authStatus == AuthStatus.LoggedIn) {
+    if (!selectedChainUID && authStatus == AuthStatus.LoggedIn) {
       router.replace("/(auth)/select-chain");
     }
-  }, [selectedChainUID, auth.authStatus]);
+  }, [selectedChainUID, authStatus]);
 
   useQuery({
     queryKey: [
       "auth",
       "user-chains",
-      auth.authUser?.uid,
-      auth.authUser?.chains?.join(","),
+      authUser?.uid,
+      authUser?.chains?.join(","),
     ],
     async queryFn() {
-      if (!auth.authUser?.chains.length) {
+      if (!authUser?.chains.length) {
         return [];
       }
 
-      const promises = auth.authUser.chains
+      const promises = authUser.chains
         .filter((c) => c.is_approved)
         .map((c) => chainGet(c.chain_uid).then((res) => res.data));
       return await Promise.all(promises);
@@ -69,21 +71,21 @@ export default function TabLayout() {
     networkMode: "offlineFirst",
   });
   const bagTabBadge = useMemo(() => {
-    const currentAuthUserUID = auth.authUser?.uid;
+    const currentAuthUserUID = authUser?.uid;
     if (!listBags || !currentAuthUserUID) return 0;
     return listBags.reduce((v, b, i) => {
       if (b.bag.user_uid !== currentAuthUserUID) return v;
       if (b.isTooOld.isBagTooOldMe) return v + 1;
       return v;
     }, 0);
-  }, [auth.authUser?.uid, listBags]);
+  }, [authUser?.uid, listBags]);
 
   const themeColor = useMemo(() => {
-    const theme = auth.currentChain?.theme || "";
+    const theme = currentChain?.theme || "";
     const color =
       (basicThemeColors as Record<string, string>)[theme] || "#5f9c8a";
     return color + "33";
-  }, [auth.currentChain?.theme]);
+  }, [currentChain?.theme]);
 
   return (
     <Tabs
@@ -99,7 +101,7 @@ export default function TabLayout() {
         tabBarBackground: () => (
           <Box className="absolute inset-0 bg-background-100">
             <ThemeBackground
-              theme={auth.currentChain?.theme || ""}
+              theme={currentChain?.theme || ""}
               className="absolute w-full"
               style={{ top: -14, height: 14 }}
             >
@@ -109,7 +111,7 @@ export default function TabLayout() {
                 className="text-center text-white"
                 numberOfLines={1}
               >
-                {auth.currentChain?.name || t("selectALoop")}
+                {currentChain?.name || t("selectALoop")}
               </Text>
             </ThemeBackground>
           </Box>

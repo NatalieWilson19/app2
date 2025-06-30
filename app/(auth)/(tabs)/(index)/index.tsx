@@ -1,10 +1,7 @@
 import { ScrollView } from "react-native";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTranslation } from "react-i18next";
-import { useStore } from "@tanstack/react-store";
-import { authStore, authStoreCurrentChainAdmin } from "@/store/auth";
-import { TFunction, TOptionsBase } from "i18next";
-import { useMemo } from "react";
+import { AuthStoreContext } from "@/store/auth";
+import { useContext, useMemo } from "react";
 import { ExternalPathString, Link } from "expo-router";
 import {
   ChevronDownIcon,
@@ -68,7 +65,7 @@ const mediaIcons: MediaIcon[] = [
 ];
 
 export default function HomeScreen(props: {}) {
-  const hosts = useStore(authStoreCurrentChainAdmin);
+  const { authStoreCurrentChainAdmin: hosts } = useContext(AuthStoreContext);
   const { t } = useTranslation();
   const rulesDefault = useFaqDefault();
   const rulesCustom = useFaqCustom();
@@ -90,7 +87,7 @@ export default function HomeScreen(props: {}) {
           <AccordionItem key={r.key} value={r.key}>
             <AccordionHeader>
               <AccordionTrigger>
-                {({ isExpanded }) => {
+                {({ isExpanded }: { isExpanded: false }) => {
                   return (
                     <>
                       <AccordionTitleText>{r.title}</AccordionTitleText>

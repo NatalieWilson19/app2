@@ -1,4 +1,3 @@
-import { authStore, authStoreAuthUserRoles } from "@/store/auth";
 import {
   ChevronDown,
   EyeOff,
@@ -7,7 +6,6 @@ import {
   PauseCircleIcon,
   StarIcon,
 } from "lucide-react-native";
-import { useStore } from "@tanstack/react-store";
 import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Alert, Pressable, ScrollView } from "react-native";
@@ -25,7 +23,7 @@ import LogoutLink from "@/components/custom/LogoutLink";
 import LegalLinks from "@/components/custom/LegalLinks";
 import RefreshControl from "@/components/custom/RefreshControl";
 import { VStack } from "@/components/ui/vstack";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import usePauseDialog, { SetPause } from "@/components/custom/info/PauseDialog";
 import { IsPausedHow, SetPauseRequestBody } from "@/utils/user";
 import dayjs from "dayjs";
@@ -35,13 +33,17 @@ import { userUpdate } from "@/api/user";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import ReadOnlySwitch from "@/components/custom/ReadOnlySwitch";
 import ThemeBackground from "@/components/custom/ThemeBackground";
+import { AuthStoreContext } from "@/store/auth";
 
 export default function Info() {
   const { t } = useTranslation();
 
   const tabBarHeight = useBottomTabBarHeight();
-  const { authUser, currentChain } = useStore(authStore);
-  const authUserRoles = useStore(authStoreAuthUserRoles);
+  const {
+    authUser,
+    currentChain,
+    authStoreAuthUserRoles: authUserRoles,
+  } = useContext(AuthStoreContext);
   const queryClient = useQueryClient();
 
   const pauseState = useMemo(() => {
@@ -76,7 +78,7 @@ export default function Info() {
   const mutationPause = useMutation({
     async mutationFn(o: SetPause) {
       const body = SetPauseRequestBody(
-        authStore.state.authUser!.uid,
+        authUser!.uid,
         o.isPausedOrUntil,
         o.chainUid,
       );

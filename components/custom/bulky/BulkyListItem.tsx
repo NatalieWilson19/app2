@@ -5,11 +5,10 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import dayjs from "dayjs";
 import { EllipsisIcon } from "lucide-react-native";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { Image, Pressable } from "react-native";
 import BagsListItemUser from "../bags/BagListItemUser";
-import { useStore } from "@tanstack/react-store";
-import { authStoreListRouteUsers } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { Icon } from "@/components/ui/icon";
 
 export default function BulkyListItem(props: {
@@ -18,7 +17,7 @@ export default function BulkyListItem(props: {
   isEditable: boolean;
   onOpenOptions: () => void;
 }) {
-  const routeUsers = useStore(authStoreListRouteUsers);
+  const { authStoreListRouteUsers: routeUsers } = useContext(AuthStoreContext);
   const routeUser = useMemo(() => {
     return routeUsers.find((u) => u.user.uid == props.bulky.user_uid);
   }, [props.bulky.user_uid, routeUsers]);

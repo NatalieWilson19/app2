@@ -1,7 +1,7 @@
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { WebView } from "react-native-webview";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native";
@@ -12,18 +12,17 @@ import {
   CheckboxLabel,
 } from "@/components/ui/checkbox";
 import { CheckIcon, StampIcon } from "lucide-react-native";
-import { useStore } from "@tanstack/react-store";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { useForm } from "@tanstack/react-form";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { userUpdate } from "@/api/user";
-import { User } from "@/api/typex2";
-import { savedStore } from "@/store/saved";
+import { SavedStoreContext } from "@/store/saved";
 
 export default function AcceptDpa() {
-  const authUser = useStore(authStore, (s) => s.authUser);
+  const { authUser, setAuthUser } = useContext(AuthStoreContext);
+  const { saved: savedStore } = useContext(SavedStoreContext);
   const form = useForm({
     defaultValues: {
       accepted_dpa: false,
@@ -37,13 +36,10 @@ export default function AcceptDpa() {
         user_uid: authUser.uid,
         accepted_legal: true,
       }).then((res) => {
-        authStore.setState((s) => ({
-          ...s,
-          authUser: {
-            ...(s.authUser as User),
-            accepted_dpa: true,
-            accepted_toh: true,
-          },
+        setAuthUser((s) => ({
+          ...s!,
+          accepted_dpa: true,
+          accepted_toh: true,
         }));
       });
     },
@@ -52,7 +48,7 @@ export default function AcceptDpa() {
   useEffect(() => {
     if (!authUser) return;
     if (authUser.accepted_dpa && authUser.accepted_toh) {
-      if (savedStore.state.chainUID) {
+      if (savedStore.chainUID) {
         router.replace("/(auth)/(tabs)/(index)");
       } else {
         router.replace("/(auth)/select-chain");

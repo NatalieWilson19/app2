@@ -1,11 +1,12 @@
 import { Text } from "@/components/ui/text";
-import { authStoreAuthUserRoles } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { $authStoreAuthUserRoles, AuthStoreContext } from "@/store/auth";
 import { Link, Stack } from "expo-router";
+import { useStore } from "@nanostores/react";
 import { useTranslation } from "react-i18next";
+import { useCallback, useContext } from "react";
 
 export default function RulesStackLayout() {
-  const isHost = useStore(authStoreAuthUserRoles, (s) => s.isHost);
+  const { authStoreAuthUserRoles } = useContext(AuthStoreContext);
   const { t } = useTranslation();
   return (
     <Stack>
@@ -14,7 +15,7 @@ export default function RulesStackLayout() {
         options={{
           headerLargeTitle: true,
           title: t("howDoesItWork"),
-          headerRight: isHost
+          headerRight: authStoreAuthUserRoles.isHost
             ? () => (
                 <Link asChild push href="/(auth)/rules/change">
                   <Text>{t("edit")}</Text>

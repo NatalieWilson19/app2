@@ -1,11 +1,11 @@
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
-import { useStore } from "@tanstack/react-store";
 import { Redirect } from "expo-router";
-import { chatStore } from "@/store/chat";
+import { ChatStoreContext } from "@/store/chat";
+import { useContext } from "react";
 
 export default function ChatChange() {
-  const chatInAppDisabled = useStore(chatStore, (s) => s.chatInAppDisabled);
+  const { chatInAppDisabled } = useContext(ChatStoreContext);
   if (chatInAppDisabled === false) {
     return <Redirect href="/(auth)/(tabs)/chat/in-app" />;
   } else if (chatInAppDisabled === true) {

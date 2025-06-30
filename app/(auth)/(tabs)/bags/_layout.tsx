@@ -1,12 +1,14 @@
 import { Text } from "@/components/ui/text";
-import { authStoreAuthUserRoles } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
+import { useStore } from "@nanostores/react";
 import { Link, Stack } from "expo-router";
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function BagsStackLayout() {
   const { t } = useTranslation();
-  const authUserRoles = useStore(authStoreAuthUserRoles);
+  const { authStoreAuthUserRoles: authUserRoles } =
+    useContext(AuthStoreContext);
   return (
     <Stack screenOptions={{}}>
       <Stack.Screen

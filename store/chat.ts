@@ -1,6 +1,7 @@
 import { UID } from "@/api/types";
 import { ChatChannel } from "@/api/typex2";
-import { Store } from "@tanstack/react-store";
+import ProviderFactory from "@/utils/ProviderFactory";
+import { useState } from "react";
 
 export enum ChatConnStatus {
   Loading,
@@ -17,9 +18,33 @@ export type EditChannel = {
   fallbackChainUID: UID;
 };
 
-export const chatStore = new Store({
-  appType: null as AppType | null,
-  chatUrl: "",
-  chatInAppDisabled: null as boolean | null,
-  editChannel: null as EditChannel | null,
+export const [ChatStoreProvider, ChatStoreContext] = ProviderFactory(() => {
+  const [appType, setAppType] = useState<AppType | null>(null);
+  const [chatUrl, setChatUrl] = useState("");
+  const [chatInAppDisabled, setChatInAppDisabled] = useState<boolean | null>(
+    null,
+  );
+  const [editChannel, setEditChannel] = useState<EditChannel | null>(null);
+
+  function reset() {
+    setAppType(null);
+    setChatUrl("");
+    setChatInAppDisabled(null);
+    setEditChannel(null);
+  }
+
+  return {
+    // state
+    appType,
+    setAppType,
+    chatUrl,
+    setChatUrl,
+    chatInAppDisabled,
+    setChatInAppDisabled,
+    editChannel,
+    setEditChannel,
+
+    // fn
+    reset,
+  };
 });

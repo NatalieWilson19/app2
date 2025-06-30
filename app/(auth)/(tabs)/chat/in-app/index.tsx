@@ -13,12 +13,16 @@ import { Box } from "@/components/ui/box";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { authStore, authStoreAuthUserRoles } from "@/store/auth";
-import { chatStore } from "@/store/chat";
+import { AuthStoreContext } from "@/store/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useStore } from "@tanstack/react-store";
 import { EllipsisIcon, MessageCircleQuestionIcon } from "lucide-react-native";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -32,14 +36,19 @@ import { Redirect, router, useNavigation } from "expo-router";
 import { useInterval } from "usehooks-ts";
 import useQueryChatMessages from "@/components/custom/chat/UseQueryChatMessages";
 import { messagingApps } from "@/constants/MessagingApps";
+import { ChatStoreContext } from "@/store/chat";
 
 export default function ChatClothingloop() {
-  const { currentChain, authUser, currentChainUsers } = useStore(authStore);
-  const { isHost } = useStore(authStoreAuthUserRoles);
+  const {
+    currentChain,
+    authUser,
+    currentChainUsers,
+    authStoreAuthUserRoles: authUserRoles,
+  } = useContext(AuthStoreContext);
+
   const queryClient = useQueryClient();
-  const authUserRoles = useStore(authStoreAuthUserRoles);
   const { t } = useTranslation();
-  const chat = useStore(chatStore);
+  const chat = useContext(ChatStoreContext);
   const navigation = useNavigation();
   const messagingIcon = useMemo(
     () => messagingApps.find((m) => m.key == chat.appType),
@@ -48,7 +57,7 @@ export default function ChatClothingloop() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight:
-        isHost || chat.appType !== "off"
+        authUserRoles.isHost || chat.appType !== "off"
           ? () => (
               <Pressable
                 onPress={() => router.push("/(auth)/(tabs)/chat/in-app/types")}
@@ -132,10 +141,7 @@ export default function ChatClothingloop() {
   }
 
   function openEditChannel(channel: ChatChannel) {
-    chatStore.setState((s) => ({
-      ...s,
-      editChannel: { channel, fallbackChainUID: currentChain!.uid },
-    }));
+    chat.setEditChannel({ channel, fallbackChainUID: currentChain!.uid });
     router.push("/(auth)/chat/in-app/channel-edit");
   }
 
@@ -190,7 +196,7 @@ export default function ChatClothingloop() {
 
   function handleMessageOptions(message: ChatMessage) {
     const buttons: AlertButton[] = [];
-    if (isHost) {
+    if (authUserRoles.isHost) {
       buttons.push({
         text: message.is_pinned ? t("unpin") : t("pin"),
         style: "default",
@@ -251,10 +257,10 @@ export default function ChatClothingloop() {
   }
 
   function handleCreateChannel() {
-    chatStore.setState((s) => ({
-      ...s,
-      editChannel: { fallbackChainUID: currentChain!.uid, channel: null },
-    }));
+    chat.setEditChannel({
+      fallbackChainUID: currentChain!.uid,
+      channel: null,
+    });
     router.push("/(auth)/chat/in-app/channel-create");
   }
   if (chat.chatInAppDisabled === true) {
@@ -281,7 +287,7 @@ export default function ChatClothingloop() {
               onEndReached={() => queryChatHistory.addPagePrev()}
               messages={queryChatHistory.messages}
               authUserUID={authUser?.uid || ""}
-              isAuthUserAdmin={isHost}
+              isAuthUserAdmin={authUserRoles.isHost}
               onMessageOptions={handleMessageOptions}
               onRefresh={handleMessagesRefresh}
             />
