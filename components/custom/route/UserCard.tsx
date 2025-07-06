@@ -8,7 +8,7 @@ import { messagingApps } from "@/constants/MessagingApps";
 import IsPrivate from "@/utils/is_private";
 import { Flag, MailIcon, MapPinIcon, Shield } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
-import { Linking, Pressable, Share } from "react-native";
+import { I18nManager, Linking, Pressable, Share } from "react-native";
 import InterestedSizes, { Categories, Sizes } from "./InterestedSizes";
 import { Button, ButtonIcon } from "@/components/ui/button";
 
@@ -39,10 +39,11 @@ export default function UserCard(props: {
         props.user.address.replaceAll(" ", "+"),
     });
   }
+
   return (
     <VStack className="bg-background-0">
       {props.isUserHost || props.isUserWarden ? (
-        <VStack className="px-4 py-2">
+        <VStack className="px-4 py-2 rtl:items-start">
           <Text bold size="sm">
             {t("loopRole")}
           </Text>
@@ -70,8 +71,8 @@ export default function UserCard(props: {
         </VStack>
       ) : null}
       {props.user.phone_number ? (
-        <Pressable onPress={handleSharePhoneNumber} key="phone">
-          <VStack className="px-4 py-2">
+        <Pressable onPress={handleSharePhoneNumber} key="phone" >
+          <VStack className="px-4 py-2 rtl:items-start">
             <Text bold size="sm">
               {t("phoneNumber")}
             </Text>
