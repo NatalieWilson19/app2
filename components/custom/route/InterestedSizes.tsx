@@ -118,7 +118,7 @@ export default function InterestedSizes(props: {
   }, [props.sizes, props.categories, t]);
   return (
     <VStack className="px-4 py-2">
-      <Text size="sm" bold>
+      <Text size="sm" bold className="rtl:self-start">
         {t("interestedSizes")}
       </Text>
       <VStack className="gap-1">

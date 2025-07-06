@@ -4,7 +4,10 @@ import { HStack } from "../ui/hstack";
 import { Text } from "../ui/text";
 import { Icon } from "../ui/icon";
 import { Trans, useTranslation } from "react-i18next";
-import { ChevronRightIcon } from "lucide-react-native";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
+import { I18nManager } from "react-native";
+
+const Chevron = I18nManager.isRTL ? ChevronLeftIcon : ChevronRightIcon;
 
 export default function LegalLinks() {
   const { t } = useTranslation();
@@ -13,13 +16,13 @@ export default function LegalLinks() {
       <Link href="/privacy-policy">
         <HStack className="w-full justify-between bg-background-100 p-3">
           <Text>{t("privacyPolicy")}</Text>
-          <Icon as={ChevronRightIcon} />
+          <Icon as={Chevron} />
         </HStack>
       </Link>
       <Link href="/open-source">
         <HStack className="w-full justify-between bg-background-100 p-3">
           <Text>{t("openSource")}</Text>
-          <Icon as={ChevronRightIcon} />
+          <Icon as={Chevron} />
         </HStack>
       </Link>
       <VStack className="bg-background-100 p-3">
