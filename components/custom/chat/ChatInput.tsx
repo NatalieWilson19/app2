@@ -233,11 +233,11 @@ export default function ChatInput<User extends GenericUser>(props: {
         </Input>
         <Button
           variant="solid"
-          className="h-12 w-12 rounded-full"
+          className="h-12 w-12 rounded-full rtl:-scale-x-100"
           action="primary"
           onPress={onSubmit}
         >
-          <ButtonIcon as={SendHorizonalIcon} />
+          <ButtonIcon key="send-icon" as={SendHorizonalIcon} />
         </Button>
       </View>
     </View>

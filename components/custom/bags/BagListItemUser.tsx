@@ -3,14 +3,15 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { router } from "expo-router";
-import { ArrowRightIcon } from "lucide-react-native";
-import { Pressable } from "react-native";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react-native";
+import { I18nManager, Pressable } from "react-native";
 
 export default function BagsListItemUser(props: {
   isPrivate: boolean;
   routeIndex?: number;
   user?: User;
 }) {
+  const Arrow = I18nManager.isRTL ? ArrowLeftIcon : ArrowRightIcon
   const render = () => (
     <HStack className="border-1 w-full flex-shrink rounded-b-md border-background-200 bg-background-0 px-2 py-3">
       {props.routeIndex != undefined && props.user ? (
@@ -21,7 +22,7 @@ export default function BagsListItemUser(props: {
           </Text>
           {props.isPrivate ? null : (
             <Icon
-              as={ArrowRightIcon}
+              as={Arrow}
               key="arrow"
               className="text-primary-500"
             />

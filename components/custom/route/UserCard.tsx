@@ -43,7 +43,7 @@ export default function UserCard(props: {
   return (
     <VStack className="bg-background-0">
       {props.isUserHost || props.isUserWarden ? (
-        <VStack className="px-4 py-2 rtl:items-start">
+        <VStack className="px-4 py-2">
           <Text bold size="sm">
             {t("loopRole")}
           </Text>
@@ -72,7 +72,7 @@ export default function UserCard(props: {
       ) : null}
       {props.user.phone_number ? (
         <Pressable onPress={handleSharePhoneNumber} key="phone" >
-          <VStack className="px-4 py-2 rtl:items-start">
+          <VStack className="px-4 py-2">
             <Text bold size="sm">
               {t("phoneNumber")}
             </Text>

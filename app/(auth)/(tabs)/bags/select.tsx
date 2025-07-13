@@ -105,6 +105,7 @@ export default function BagsSheet() {
             value={search}
             onChangeText={setSearch}
             placeholder={t("search")}
+            className="placeholder:text-right"
           />
           <InputSlot className="pr-3" onPress={() => setSearch("")}>
             {search ? (

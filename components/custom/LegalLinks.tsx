@@ -25,11 +25,11 @@ export default function LegalLinks() {
           <Icon as={Chevron} />
         </HStack>
       </Link>
-      <VStack className="bg-background-100 p-3">
+      <VStack className="bg-background-100 p-3 items-start" >
         <Text size="sm" bold>
           {t("deleteAccount")}
         </Text>
-        <Text>
+        <Text className="text-left">
           <Trans
             t={t}
             i18nKey="deleteAccountExplanation"

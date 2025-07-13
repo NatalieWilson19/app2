@@ -7,12 +7,14 @@ import { VStack } from "@/components/ui/vstack";
 import { Link } from "expo-router";
 import {
   ArrowBigUpIcon,
+  ChevronLeft,
   ChevronRight,
   Flag,
   Pause,
   Shield,
   ShoppingBagIcon,
 } from "lucide-react-native";
+import { I18nManager } from "react-native";
 
 interface Props {
   user: User;
@@ -30,6 +32,7 @@ export default function RouteItem(props: Props) {
   const hideLink =
     (props.isPaused || props.isPrivate) && !props.isAuthHost && !props.isMe;
 
+    const Chevron = I18nManager.isRTL ? ChevronLeft : ChevronRight
   return (
     <Link
       key={props.user.uid}
@@ -92,7 +95,7 @@ export default function RouteItem(props: Props) {
           {hideLink ? (
             <Box className="ms-2 w-4" />
           ) : (
-            <Icon as={ChevronRight} className="ms-2" />
+            <Icon as={Chevron} className="ms-2" />
           )}
           <VStack className="max-h-12 flex-wrap-reverse gap-0.5">
             {props.bags.map((b) => {
