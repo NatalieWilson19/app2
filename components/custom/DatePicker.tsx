@@ -9,9 +9,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
+import {
+  ChevronDownIcon,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUpIcon,
+} from "lucide-react-native";
 import { HStack } from "../ui/hstack";
 import { Text } from "../ui/text";
+import { Icon } from "../ui/icon";
 
 export default function DatePickerSingleItem({
   value,
@@ -64,6 +70,10 @@ export default function DatePickerSingleItem({
             mode="single"
             date={value}
             onChange={({ date }) => setValue(date as Date)}
+            components={{
+              IconPrev: <Icon as={ChevronLeft} />,
+              IconNext: <Icon as={ChevronRight} />,
+            }}
           />
         </AccordionContent>
       </AccordionItem>
