@@ -105,7 +105,7 @@ export default function Info() {
     >
       <Box className="pb-3">
         <Box className="flex-col bg-background-0">
-          <Text className="m-3 text-3xl text-black" bold>
+          <Text className="m-3 text-3xl text-black rtl:self-start" bold>
             {t("account")}
           </Text>
           {authUser ? (
@@ -162,7 +162,7 @@ export default function Info() {
               <Link asChild href="/(auth)/select-chain">
                 <Pressable>
                   <Box className="flex-col px-3 pb-4 pt-2">
-                    <Text bold size="sm">
+                    <Text bold size="sm" className="rtl:self-start">
                       {t("selectALoop")}
                     </Text>
                     <HStack className="shrink items-center justify-between">
@@ -199,8 +199,8 @@ export default function Info() {
                 />
               ) : null}
               {currentChain?.description ? (
-                <Box className="p-3">
-                  <Text size="sm" bold>
+                <Box className="p-3 rtl:items-start">
+                  <Text size="sm" bold className="">
                     {t("description")}
                   </Text>
                   <FormattedText content={currentChain.description} />
@@ -210,7 +210,7 @@ export default function Info() {
                 <>
                   <Link asChild href="https://clothingloop.org/">
                     <Pressable>
-                      <Box className="flex-row items-center gap-3 p-3">
+                      <Box className="flex-row items-center gap-3 p-3 rtl:flex-row-reverse">
                         <Text className="flex-grow">
                           {t("goToAdminPortal")}
                         </Text>
@@ -220,7 +220,7 @@ export default function Info() {
                   </Link>
                   <Link asChild href="/(auth)/(tabs)/info/select-theme">
                     <Pressable>
-                      <Box className="flex-row items-center gap-3 p-3">
+                      <Box className="flex-row items-center gap-3 p-3 rtl:flex-row-reverse">
                         <Text className="flex-grow">{t("theme")}</Text>
                         <Icon as={StarIcon} />
                       </Box>
