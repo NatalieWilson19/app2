@@ -1,33 +1,34 @@
-import { authStore, authStoreListRouteUsers } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { useTranslation } from "react-i18next";
-import { Text } from "../../../../components/ui/text";
-import { RadioGroup } from "../../../../components/ui/radio";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { Text } from "../../../components/ui/text";
+import { RadioGroup } from "../../../components/ui/radio";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { bagPut } from "@/api/bag";
 import { UID } from "@/api/types";
 import { useForm } from "@tanstack/react-form";
 import { catchErrThrow401 } from "@/utils/handleRequests";
-import DatePickerSingleItem from "../../../../components/custom/DatePicker";
+import DatePickerSingleItem from "../../../components/custom/DatePicker";
 import { FlatList, Pressable, View } from "react-native";
 import useFilteredRouteUsers from "@/hooks/useFilteredRouteUsers";
-import BagsSelectRadioItem from "../../../../components/custom/bags/BagsSelectRadioItem";
+import BagsSelectRadioItem from "../../../components/custom/bags/BagsSelectRadioItem";
 import { Box } from "@/components/ui/box";
 import { Link, router, useNavigation } from "expo-router";
-import { selectedBagStore } from "@/store/selected-bag";
+import { SelectedBagStoreContext } from "@/store/selected-bag";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { LucideCircleX, LucideSearch } from "lucide-react-native";
 import { useDebounce } from "@uidotdev/usehooks";
 
 export default function BagsSheet() {
-  const listRouteUsers = useStore(authStoreListRouteUsers);
-  const { selectedBag } = useStore(selectedBagStore);
-
+  const { selectedBagStore: selectedBag } = useContext(SelectedBagStoreContext);
+  const {
+    authUser,
+    currentChain,
+    authStoreListRouteUsers: listRouteUsers,
+  } = useContext(AuthStoreContext);
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { currentChain, authUser } = useStore(authStore);
   const navigation = useNavigation();
   const [search, setSearch] = useState("");
 
@@ -136,6 +137,8 @@ export default function BagsSheet() {
               <FlatList
                 className="shrink"
                 data={sortedListRouteUsers}
+                initialNumToRender={20}
+                maxToRenderPerBatch={20}
                 keyExtractor={(item) => String(item.routeUser.routeIndex)}
                 renderItem={({ item }) => (
                   <BagsSelectRadioItem

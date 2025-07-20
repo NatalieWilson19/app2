@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import DateTimePicker, { useDefaultStyles } from "react-native-ui-datepicker";
-import { DatePickerSingleProps } from "react-native-ui-datepicker/lib/typescript/datetime-picker";
+import type { DatePickerSingleProps } from "react-native-ui-datepicker/lib/typescript/datetime-picker";
 import {
   Accordion,
   AccordionContent,
@@ -42,7 +42,7 @@ export default function DatePickerSingleItem({
       <AccordionItem value="a">
         <AccordionHeader>
           <AccordionTrigger>
-            {({ isExpanded }) => {
+            {({ isExpanded }: { isExpanded: boolean }) => {
               return (
                 <>
                   <HStack className="flex-grow items-center justify-between">

@@ -1,11 +1,5 @@
 import { ScrollView } from "react-native";
-import { useStore } from "@tanstack/react-store";
-import {
-  authStore,
-  authStoreAuthUserRoles,
-  authStoreListBags,
-  ListBag,
-} from "@/store/auth";
+import { AuthStoreContext, ListBag } from "@/store/auth";
 import RefreshControl from "@/components/custom/RefreshControl";
 import BagsList from "@/components/custom/bags/BagsList";
 import Donate from "@/components/custom/Donate";
@@ -16,20 +10,21 @@ import { Text } from "@/components/ui/text";
 import { useTranslation } from "react-i18next";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Link, router } from "expo-router";
-import { selectedBagStore } from "@/store/selected-bag";
+import { useContext } from "react";
+import { SelectedBagStoreContext } from "@/store/selected-bag";
 
 export default function Bags() {
   const { t } = useTranslation();
-  const listBags = useStore(authStoreListBags);
-  const { currentBulky } = useStore(authStore);
   const tabBarHeight = useBottomTabBarHeight();
-  const authUserRoles = useStore(authStoreAuthUserRoles);
+  const { setSelectedBagStore } = useContext(SelectedBagStoreContext);
+  const {
+    authStoreAuthUserRoles: authUserRoles,
+    authStoreListBags: listBags,
+    currentBulky,
+  } = useContext(AuthStoreContext);
   const onPressBag = (item: ListBag) => {
-    selectedBagStore.setState((s) => ({
-      ...s,
-      selectedBag: item,
-    }));
-    router.push("/(auth)/(tabs)/bags/select");
+    setSelectedBagStore(item);
+    router.push("/(auth)/bags/select");
   };
 
   return (
@@ -51,7 +46,7 @@ export default function Bags() {
         <Text className="text-lg font-semibold text-typography-800">
           {t("bulkyItems")}
         </Text>
-        <Link href="./bags/bulky/create" className="px-2">
+        <Link href="/(auth)/bulky/create" className="px-2">
           <Text size="md" className="text-primary-500">
             {t("createBulkyItem")}
           </Text>

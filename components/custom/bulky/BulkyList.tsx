@@ -1,24 +1,24 @@
 import { BulkyItem } from "@/api/typex2";
 import { VStack } from "@/components/ui/vstack";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { HStack } from "@/components/ui/hstack";
 import { Alert } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import { useStore } from "@tanstack/react-store";
-import { authStore, authStoreAuthUserRoles } from "@/store/auth";
+import { useStore } from "@nanostores/react";
 import { router } from "expo-router";
 import { bulkyItemRemove } from "@/api/bulky";
 import { useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 import BulkyListItem from "./BulkyListItem";
 import BulkySelectedModal from "./BulkySelectedModal";
+import { AuthStoreContext } from "@/store/auth";
 
 export default function BulkyList(props: { bulkyList: BulkyItem[] }) {
   const [selected, setSelected] = useState<BulkyItem | null>(null);
   const { showActionSheetWithOptions } = useActionSheet();
-  const authUser = useStore(authStore, (s) => s.authUser);
+  const { authUser, authStoreAuthUserRoles } = useContext(AuthStoreContext);
+  const { isHost } = authStoreAuthUserRoles;
   const queryClient = useQueryClient();
-  const isHost = useStore(authStoreAuthUserRoles, (s) => s.isHost);
   const cols = useMemo(() => {
     const col1: BulkyItem[] = [];
     let col1mass = 0;
@@ -57,7 +57,7 @@ export default function BulkyList(props: { bulkyList: BulkyItem[] }) {
           // cancel action
         } else if (buttonIndex === 1) {
           // edit
-          router.push(`/(auth)/(tabs)/bags/bulky/edit/${bulky.id}/`);
+          router.push(`/(auth)/bulky/edit/${bulky.id}/`);
         } else if (buttonIndex === 2) {
           // delete
           Alert.alert(

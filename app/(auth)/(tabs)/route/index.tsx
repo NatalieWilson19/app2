@@ -1,13 +1,6 @@
-import { useStore } from "@tanstack/react-store";
-import {
-  authStore,
-  authStoreAuthUserRoles,
-  authStoreCurrentBagsPerUser,
-  authStoreListPausedUsers,
-  authStoreListRouteUsers,
-} from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useContext, useLayoutEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 // import { Map } from "lucide-react-native";
 import { Platform, Pressable, ScrollView } from "react-native";
@@ -30,14 +23,16 @@ import { Icon } from "@/components/ui/icon";
 import { SortDescIcon } from "lucide-react-native";
 
 export default function Route() {
-  const { currentChain } = useStore(authStore);
-  const authUserRoles = useStore(authStoreAuthUserRoles);
-  const routeUsers = useStore(authStoreListRouteUsers);
-  const bagsPerUser = useStore(authStoreCurrentBagsPerUser);
+  const {
+    currentChain,
+    authStoreAuthUserRoles: authUserRoles,
+    authStoreListRouteUsers: routeUsers,
+    authStoreCurrentBagsPerUser: bagsPerUser,
+    authStoreListPausedUsers: pausedUserUids,
+  } = useContext(AuthStoreContext);
 
   const [openRouteOrderDialog, setOpenRouteOrderDialog] = useState(false);
   const [search, setSearch] = useState("");
-  const pausedUserUids = useStore(authStoreListPausedUsers);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [sort, setSort] = useState<FilteredRouteUsersSort>("routeForMe");

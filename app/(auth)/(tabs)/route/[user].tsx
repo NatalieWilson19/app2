@@ -5,33 +5,31 @@ import WardenEdit from "@/components/custom/route/WardenEdit";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import {
-  authStore,
-  authStoreAuthUserRoles,
-  authStoreListBags,
-  authStoreListRouteUsers,
-  ListBag,
-} from "@/store/auth";
+import { AuthStoreContext, ListBag } from "@/store/auth";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useStore } from "@tanstack/react-store";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect, useMemo } from "react";
+import { useContext, useEffect, useLayoutEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 
 export default function RouteUser() {
   const { user: uid }: { user: string } = useLocalSearchParams();
-  const { currentChain, authUser } = useStore(authStore);
-  const listRouteUsers = useStore(authStoreListRouteUsers);
-  const authUserRoles = useStore(authStoreAuthUserRoles);
+  const {
+    currentChain,
+    authUser,
+    authStoreListRouteUsers: listRouteUsers,
+    authStoreAuthUserRoles: authUserRoles,
+    authStoreListBags,
+  } = useContext(AuthStoreContext);
 
   const { t } = useTranslation();
   const routeItem = useMemo(
     () => listRouteUsers?.find(({ user }) => user.uid == uid),
     [uid, listRouteUsers, currentChain],
   );
-  const myBags = useStore(authStoreListBags, (s) =>
-    s.filter((v) => v.routeUser?.user.uid == uid),
+  const myBags = useMemo(
+    () => authStoreListBags.filter((v) => v.routeUser?.user.uid == uid),
+    [authStoreListBags],
   );
   const isMe = routeItem?.user.uid == authUser?.uid;
   const isNoteEditable = isMe || authUserRoles.isHost;
@@ -60,7 +58,7 @@ export default function RouteUser() {
       style={{ paddingBottom: tabBarHeight }}
     >
       {routeItem ? (
-        <VStack className="bg-background-0">
+        <VStack className="mb-4 bg-background-0">
           <UserCard
             user={routeItem.user}
             isUserPaused={routeItem.isPaused}

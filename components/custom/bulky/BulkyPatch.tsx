@@ -2,7 +2,7 @@ import FormLabel from "@/components/custom/FormLabel";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import {
@@ -12,8 +12,8 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { useForm, useStore } from "@tanstack/react-form";
-import { authStore } from "@/store/auth";
+import { useForm } from "@tanstack/react-form";
+import { AuthStoreContext } from "@/store/auth";
 import { Input, InputField } from "@/components/ui/input";
 import { Button, ButtonText } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
@@ -26,8 +26,7 @@ import { bulkyItemPut } from "@/api/bulky";
 export default function BulkyPatch(props: { BulkyItem: BulkyItem | null }) {
   const { t } = useTranslation();
 
-  const authUser = useStore(authStore, (s) => s.authUser);
-  const currentChain = useStore(authStore, (s) => s.currentChain);
+  const { authUser, currentChain } = useContext(AuthStoreContext);
   const queryClient = useQueryClient();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);

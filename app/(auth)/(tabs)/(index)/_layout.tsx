@@ -1,11 +1,11 @@
 import { Text } from "@/components/ui/text";
-import { authStoreAuthUserRoles } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { Link, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useCallback, useContext } from "react";
 
 export default function RulesStackLayout() {
-  const isHost = useStore(authStoreAuthUserRoles, (s) => s.isHost);
+  const { authStoreAuthUserRoles } = useContext(AuthStoreContext);
   const { t } = useTranslation();
   return (
     <Stack>
@@ -14,20 +14,13 @@ export default function RulesStackLayout() {
         options={{
           headerLargeTitle: true,
           title: t("howDoesItWork"),
-          headerRight: isHost
+          headerRight: authStoreAuthUserRoles.isHost
             ? () => (
-                <Link asChild href="./change">
+                <Link asChild push href="/(auth)/rules/change">
                   <Text>{t("edit")}</Text>
                 </Link>
               )
             : undefined,
-        }}
-      />
-      <Stack.Screen
-        name="change"
-        options={{
-          headerLargeTitle: false,
-          title: t("customLoopRules"),
         }}
       />
     </Stack>

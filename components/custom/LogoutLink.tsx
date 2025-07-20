@@ -1,18 +1,23 @@
 import { useTranslation } from "react-i18next";
 import { Button, ButtonText } from "../ui/button";
-import { savedStore } from "@/store/saved";
+import { SavedStoreContext } from "@/store/saved";
 import axios from "@/api/axios";
 import { logout } from "@/api/login";
-import { authStore } from "@/store/auth";
+import { AuthStoreContext } from "@/store/auth";
 import { Box } from "../ui/box";
 import { Alert } from "react-native";
-import { oneSignalStore } from "@/store/onesignal";
+import { OneSignalStoreContext } from "@/store/onesignal";
 import { OneSignal } from "react-native-onesignal";
-import { chatStore } from "@/store/chat";
-import { AuthStatus } from "@/types/auth_status";
+import { ChatStoreContext } from "@/store/chat";
+import { router } from "expo-router";
+import { useContext } from "react";
 
 export default function LogoutLink() {
   const { t } = useTranslation();
+  const { reset: resetSaved } = useContext(SavedStoreContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(OneSignalStoreContext);
+  const { resetAuth } = useContext(AuthStoreContext);
+  const { reset: resetChat } = useContext(ChatStoreContext);
 
   function openLogoutDialog() {
     Alert.alert(t("logout"), t("areYouSureYouWantToLogout"), [
@@ -33,34 +38,16 @@ export default function LogoutLink() {
   function onLogout() {
     logout().finally(() => {
       axios.defaults.auth = undefined;
-      savedStore.setState(() => ({
-        userUID: "",
-        token: "",
-        chainUID: "",
-      }));
-      authStore.setState(() => ({
-        authStatus: AuthStatus.LoggedOut,
-        authUser: null,
-        currentChain: null,
-        currentChainUsers: null,
-        currentBags: null,
-        currentBulky: null,
-        currentChainRoute: null,
-      }));
-      // chatStore.state.conn?.close();
-      chatStore.setState((s) => ({
-        ...s,
-        appType: null,
-        chatUrl: "",
-        state: {},
-        // connStatus: ChatConnStatus.Loading,
-        // conn: null,
-        // chatAuth: null,
-      }));
-      if (oneSignalStore.state.isLoggedIn) {
+
+      resetSaved();
+      resetAuth();
+      resetChat();
+
+      if (isLoggedIn) {
         OneSignal.logout();
-        oneSignalStore.setState((s) => ({ ...s, isLoggedIn: false }));
+        setIsLoggedIn(false);
       }
+      router.replace("/onboarding/login");
     });
   }
 

@@ -1,4 +1,3 @@
-import { authStore, authStoreAuthUserRoles } from "@/store/auth";
 import {
   ChevronDown,
   EyeOff,
@@ -7,7 +6,6 @@ import {
   PauseCircleIcon,
   StarIcon,
 } from "lucide-react-native";
-import { useStore } from "@tanstack/react-store";
 import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Alert, Pressable, ScrollView } from "react-native";
@@ -25,7 +23,7 @@ import LogoutLink from "@/components/custom/LogoutLink";
 import LegalLinks from "@/components/custom/LegalLinks";
 import RefreshControl from "@/components/custom/RefreshControl";
 import { VStack } from "@/components/ui/vstack";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import usePauseDialog, { SetPause } from "@/components/custom/info/PauseDialog";
 import { IsPausedHow, SetPauseRequestBody } from "@/utils/user";
 import dayjs from "dayjs";
@@ -33,15 +31,20 @@ import { Badge, BadgeIcon, BadgeText } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userUpdate } from "@/api/user";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import * as Application from "expo-application";
 import ReadOnlySwitch from "@/components/custom/ReadOnlySwitch";
 import ThemeBackground from "@/components/custom/ThemeBackground";
+import { AuthStoreContext } from "@/store/auth";
 
 export default function Info() {
   const { t } = useTranslation();
 
   const tabBarHeight = useBottomTabBarHeight();
-  const { authUser, currentChain } = useStore(authStore);
-  const authUserRoles = useStore(authStoreAuthUserRoles);
+  const {
+    authUser,
+    currentChain,
+    authStoreAuthUserRoles: authUserRoles,
+  } = useContext(AuthStoreContext);
   const queryClient = useQueryClient();
 
   const pauseState = useMemo(() => {
@@ -76,7 +79,7 @@ export default function Info() {
   const mutationPause = useMutation({
     async mutationFn(o: SetPause) {
       const body = SetPauseRequestBody(
-        authStore.state.authUser!.uid,
+        authUser!.uid,
         o.isPausedOrUntil,
         o.chainUid,
       );
@@ -159,7 +162,7 @@ export default function Info() {
               <Box className="h-4"></Box>
             </ThemeBackground>
             <Box className="flex-col border-2 border-t-0 border-background-400 bg-background-0">
-              <Link asChild href="/(auth)/select-chain">
+              <Link asChild push href="/(auth)/select-chain">
                 <Pressable>
                   <Box className="flex-col px-3 pb-4 pt-2">
                     <Text bold size="sm" className="rtl:self-start">
@@ -218,7 +221,7 @@ export default function Info() {
                       </Box>
                     </Pressable>
                   </Link>
-                  <Link asChild href="/(auth)/(tabs)/info/select-theme">
+                  <Link asChild push href="/(auth)/info/select-theme">
                     <Pressable>
                       <Box className="flex-row items-center gap-3 p-3 rtl:flex-row-reverse">
                         <Text className="flex-grow">{t("theme")}</Text>
@@ -231,6 +234,9 @@ export default function Info() {
             </Box>
           </Box>
           <LogoutLink />
+          <Box className="mb-6">
+            <Text className="text-center text-typography-700">{`v${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`}</Text>
+          </Box>
         </Box>
         <LegalLinks />
       </Box>

@@ -2,9 +2,9 @@ import { User } from "@/api/typex2";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-import { router } from "expo-router";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react-native";
 import { I18nManager, Pressable } from "react-native";
+import { Link, router } from "expo-router";
 
 export default function BagsListItemUser(props: {
   isPrivate: boolean;
@@ -38,14 +38,14 @@ export default function BagsListItemUser(props: {
 
   if (props.isPrivate) return render();
   return (
-    <Pressable
-      onPress={() => {
-        router.replace(`/(auth)/(tabs)/route/`);
-        if (props.user?.uid)
-          router.push(`/(auth)/(tabs)/route/${props.user.uid}`);
-      }}
+    <Link
+      href={
+        props.user?.uid
+          ? `/(auth)/(tabs)/route/${props.user.uid}`
+          : "/(auth)/(tabs)/route/"
+      }
     >
       {render()}
-    </Pressable>
+    </Link>
   );
 }

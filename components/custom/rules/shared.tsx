@@ -1,7 +1,6 @@
-import { authStore } from "@/store/auth";
-import { useStore } from "@tanstack/react-store";
+import { AuthStoreContext } from "@/store/auth";
 import { TOptionsBase } from "i18next";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export const faqListKeys = [
@@ -41,7 +40,7 @@ export function useFaqDefault() {
 }
 
 export function useFaqCustom(): undefined | FaqListItem[] {
-  const currentChain = useStore(authStore, (s) => s.currentChain);
+  const { currentChain } = useContext(AuthStoreContext);
   return useMemo(() => {
     if (!currentChain?.rules_override) return undefined;
     const json = JSON.parse(currentChain.rules_override);

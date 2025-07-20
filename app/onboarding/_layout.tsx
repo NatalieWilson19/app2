@@ -1,12 +1,13 @@
-import { authStore } from "@/store/auth";
-import { savedStore } from "@/store/saved";
+import { AuthStoreContext } from "@/store/auth";
+import { SavedStoreContext } from "@/store/saved";
 import { AuthStatus } from "@/types/auth_status";
-import { useStore } from "@tanstack/react-store";
 import { Redirect, Stack } from "expo-router";
+import { useContext } from "react";
 
 export default function OnboardingStackLayout() {
-  const authStatus = useStore(authStore, (s) => s.authStatus);
-  const currentChainUID = useStore(savedStore, (s) => s.chainUID);
+  const { authStatus } = useContext(AuthStoreContext);
+  const { saved } = useContext(SavedStoreContext);
+  const { chainUID: currentChainUID } = saved;
   if (authStatus === AuthStatus.LoggedIn) {
     if (currentChainUID) {
       console.info("back to home");

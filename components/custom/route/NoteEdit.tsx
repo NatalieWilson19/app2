@@ -92,7 +92,7 @@ export default function NoteEdit(props: {
             />
             <Textarea className={`z-0 ${isDirty ? "!border-amber-600" : ""}`}>
               <TextareaInput
-                className={` ${isInitialNote ? "bg-gray-200" : ""}`}
+                className={`${isInitialNote ? "bg-gray-200" : ""}`}
                 value={note}
                 onBlur={onBlur}
                 onFocus={onFocus}

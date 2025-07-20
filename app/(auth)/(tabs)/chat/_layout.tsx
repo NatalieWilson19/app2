@@ -1,25 +1,24 @@
 import { chatTypeGet } from "@/api/chat_type";
-import { authStore } from "@/store/auth";
-import { AppType, chatStore } from "@/store/chat";
+import { AppType, ChatStoreContext } from "@/store/chat";
 import { useQuery } from "@tanstack/react-query";
-import { useStore } from "@tanstack/react-store";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { AuthStoreContext } from "@/store/auth";
+import { useContext } from "react";
 
 export default function ChatStackLayout() {
   const { t } = useTranslation();
-  const { currentChain } = useStore(authStore);
+  const { currentChain } = useContext(AuthStoreContext);
+  const { setAppType, setChatUrl, setChatInAppDisabled } =
+    useContext(ChatStoreContext);
 
   useQuery({
     queryKey: ["auth", "chat-type", currentChain?.uid],
     queryFn() {
       return chatTypeGet(currentChain!.uid).then((res) => {
-        chatStore.setState((s) => ({
-          ...s,
-          appType: res.data.chat_type as AppType,
-          chatUrl: res.data.chat_url,
-          chatInAppDisabled: res.data.chat_in_app_disabled,
-        }));
+        setAppType(res.data.chat_type as AppType);
+        setChatUrl(res.data.chat_url);
+        setChatInAppDisabled(res.data.chat_in_app_disabled);
         return null;
       });
     },

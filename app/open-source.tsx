@@ -62,7 +62,7 @@ export default function OpenSource() {
         <AccordionItem value={item.name} key={item.name}>
           <AccordionHeader>
             <AccordionTrigger>
-              {({ isExpanded }) => {
+              {({ isExpanded }: { isExpanded: boolean }) => {
                 return (
                   <>
                     <AccordionTitleText>{item.name}</AccordionTitleText>

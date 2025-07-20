@@ -1,6 +1,12 @@
-import { Store } from "@tanstack/react-store";
+import { useState } from "react";
 import { ListBag } from "./auth";
+import ProviderFactory from "@/utils/ProviderFactory";
 
-export const selectedBagStore = new Store({
-  selectedBag: null as null | ListBag,
-});
+export const [SelectedBagStoreProvider, SelectedBagStoreContext] =
+  ProviderFactory(() => {
+    const [selectedBagStore, setSelectedBagStore] = useState<null | ListBag>(
+      null,
+    );
+
+    return { selectedBagStore, setSelectedBagStore };
+  });

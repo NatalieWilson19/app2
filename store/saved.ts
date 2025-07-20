@@ -1,5 +1,6 @@
-import { Store } from "@tanstack/react-store";
+import ProviderFactory from "@/utils/ProviderFactory";
 import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 
 const storage =
@@ -27,10 +28,29 @@ function GetSaved(): Saved {
   };
 }
 
-export const savedStore = new Store<Saved>(GetSaved());
+export const [SavedStoreProvider, SavedStoreContext] = ProviderFactory(() => {
+  const [saved, setSaved] = useState<Saved>(GetSaved);
 
-savedStore.subscribe(({ currentVal: s }) => {
-  storage.set("user_uid", s.userUID || "");
-  storage.set("token", s.token || "");
-  storage.set("chain_uid", s.chainUID || "");
+  useEffect(() => {
+    storage.set("user_uid", saved.userUID || "");
+    storage.set("token", saved.token || "");
+    storage.set("chain_uid", saved.chainUID || "");
+  }, [saved]);
+
+  function reset() {
+    setSaved({
+      userUID: "",
+      token: "",
+      chainUID: "",
+    });
+  }
+
+  return {
+    // state
+    saved,
+    setSaved,
+
+    // fn
+    reset,
+  };
 });

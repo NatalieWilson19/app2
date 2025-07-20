@@ -6,7 +6,10 @@ export default function ModalsLayout() {
 
   return (
     <Stack screenOptions={{}}>
-      <Stack.Screen name="index" options={{ title: t("chat") }} />
+      <Stack.Screen
+        name="index"
+        options={{ title: t("chat"), headerBackVisible: false }}
+      />
       <Stack.Screen
         name="channel-create"
         options={{
@@ -26,6 +29,7 @@ export default function ModalsLayout() {
         options={{
           presentation: "modal",
           animation: "slide_from_bottom",
+          title: t("imSelectChatApp"),
         }}
       />
     </Stack>
